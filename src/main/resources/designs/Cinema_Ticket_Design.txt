@@ -1,0 +1,38 @@
+title Cinema Ticket
+
+bottomparticipants
+participant Client
+participant TicketService
+participant TicketPaymentService
+participant SeatReservationService
+
+Client->TicketService: purchaseTickets(accountId, ticketTypeRequests)
+activate TicketService
+TicketService->TicketService: Validate accountId
+alt Invalid accountId
+    TicketService->Client: IllegalArgumentException("Invalid account id")
+else Valid accountId
+    TicketService->TicketService: Convert ticketTypeRequests to stream
+    TicketService->TicketService: Initialize variables
+    loop for each ticketTypeRequest
+        TicketService->TicketService: Validate ticketTypeRequest
+        alt Invalid ticketTypeRequest
+            TicketService->Client: IllegalArgumentException("Invalid ticket request details")
+        else Valid ticketTypeRequest
+            TicketService->TicketService: Update ticket counters
+        end
+    end
+    TicketService->TicketService: Log totalNumberOfTicketsPerTypes
+    TicketService->TicketService: Log totalPrice
+    TicketService->TicketService: Validate ticket purchase
+    alt Invalid ticket purchase
+        TicketService->Client: InvalidPurchaseException("Exception message")
+    else Valid ticket purchase
+        TicketService->TicketPaymentService: makePayment(accountId, totalPrice)
+        activate TicketPaymentService
+        TicketService->SeatReservationService: reserveSeat(accountId, totalNumberOfSeatsToBeReserved)
+        activate SeatReservationService
+        TicketPaymentService->TicketService: Payment success response
+        SeatReservationService->TicketService: Seat reservation success response
+    end
+end
