@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public class TicketServiceImpl implements TicketService {
 
     private final Logger logger = Logger.getLogger(TicketService.class.getName());
+    private static final int MAX_TICKETS_PER_PURCHASE = 20;
     private final TicketPaymentService ticketPaymentService;
     private final SeatReservationService seatReservationService;
 
@@ -54,7 +55,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void validateBeforePurchasing(AtomicInteger totalNumberOfTickets,
                                           Map<TicketTypeRequest.Type, Integer> totalNumberOfTicketsPerTypes) {
-        if (totalNumberOfTickets.get() > 20)
+        if (totalNumberOfTickets.get() > MAX_TICKETS_PER_PURCHASE)
             throw new InvalidPurchaseException("Maximum limit of tickets is 20.");
         int numberOfInfants = totalNumberOfTicketsPerTypes.getOrDefault(TicketTypeRequest.Type.INFANT, 0);
         int numberOfAdults = totalNumberOfTicketsPerTypes.getOrDefault(TicketTypeRequest.Type.ADULT, 0);

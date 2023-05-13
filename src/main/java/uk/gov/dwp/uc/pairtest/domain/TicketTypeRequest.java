@@ -1,10 +1,26 @@
 package uk.gov.dwp.uc.pairtest.domain;
 
+/**
+ * The type Ticket type request which is immutable.
+ */
 public record TicketTypeRequest(int noOfTickets, Type type) {
-    private static final int MAX_TICKETS_PER_PURCHASE = 20;
 
+    /**
+     * The enum Type.
+     */
     public enum Type {
-        ADULT, CHILD, INFANT;
+        /**
+         * Adult type.
+         */
+        ADULT,
+        /**
+         * Child type.
+         */
+        CHILD,
+        /**
+         * Infant type.
+         */
+        INFANT;
     }
 }
 
