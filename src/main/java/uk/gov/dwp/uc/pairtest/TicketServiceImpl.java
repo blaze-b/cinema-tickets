@@ -40,6 +40,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void purchaseTickets(Long accountId, TicketTypeRequest... ticketTypeRequests) {
+
+        if (Objects.isNull(accountId))
+            throw new IllegalArgumentException("Invalid account id");
+
         // Convert the array of ticket type requests into a stream
         final Stream<TicketTypeRequest> ticketTypeStream = Arrays.stream(ticketTypeRequests);
 
@@ -50,6 +54,8 @@ public class TicketServiceImpl implements TicketService {
 
         // Process each ticket type request
         ticketTypeStream.forEach(ticketTypeRequest -> {
+            if (Objects.isNull(ticketTypeRequest))
+                throw new IllegalArgumentException("Invalid ticket request details");
             totalNumberOfTickets.addAndGet(ticketTypeRequest.noOfTickets());
             totalNumberOfTicketsPerTypes.compute(ticketTypeRequest.type(), (type, total) -> Objects.nonNull(total)
                     ? total + ticketTypeRequest.noOfTickets() : ticketTypeRequest.noOfTickets());
